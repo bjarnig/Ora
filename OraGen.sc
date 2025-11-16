@@ -1,6 +1,5 @@
 OraGen {
 
-	// 1. Microtonal Cluster Generator
 	// Creates tightly packed frequencies around a base pitch
 	*cluster { |base=440, size=8, spread=50|
 		^Array.fill(size, { |i|
@@ -8,7 +7,6 @@ OraGen {
 		}).sort;
 	}
 
-	// 2. Inharmonic Series Generator
 	// Generates non-integer overtones (bell-like, metallic)
 	*inharmonic { |fundamental=100, size=10, stretch=1.05|
 		^Array.fill(size, { |i|
@@ -17,7 +15,6 @@ OraGen {
 		});
 	}
 
-	// 3. Golden Ratio Generator
 	// Uses golden ratio (phi) for spacing
 	*golden { |base=200, size=10, direction=\up|
 		var phi = (1 + 5.sqrt) / 2;  // Golden ratio: ~1.618
@@ -30,7 +27,6 @@ OraGen {
 		}).sort;
 	}
 
-	// 4. Prime Number Series
 	// Multiplies base by prime numbers - highly dissonant
 	*primes { |base=100, size=10, factor=1.0|
 		var primeNumbers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71];
@@ -40,7 +36,6 @@ OraGen {
 		};
 	}
 
-	// 5. Random Dissonant Set
 	// Random frequencies with controllable clustering/density
 	*random { |minFreq=200, maxFreq=2000, size=12, density=0.5|
 		var freqs;
@@ -67,8 +62,7 @@ OraGen {
 		};
 		^freqs.sort;
 	}
-
-	// 6. Shepard Tone Generator
+	
 	// Creates circular pitch illusion sets
 	*shepard { |base=220, octaves=4, notesPerOctave=12|
 		var freqs = [];
@@ -81,8 +75,7 @@ OraGen {
 		^freqs.sort;
 	}
 
-	// 7. BONUS: Tritone Stack
-	// Stacks tritones (most dissonant interval in Western music)
+	// Stacks tritones
 	*tritones { |base=100, size=8|
 		var ratio = 2 ** (6/12);  // Tritone ratio (sqrt(2))
 		^Array.fill(size, { |i|
@@ -90,7 +83,6 @@ OraGen {
 		});
 	}
 
-	// 8. BONUS: Xenakis Sieve
 	// Creates pitch sets using modular arithmetic (Xenakis technique)
 	*sieve { |base=100, moduli=#[8, 5, 3], size=20|
 		var indices = [];
@@ -105,7 +97,6 @@ OraGen {
 		^indices.collect { |i| base * (1 + (i * 0.1)) };
 	}
 
-	// 9. BONUS: Fibonacci Frequencies
 	// Uses Fibonacci sequence for frequency ratios
 	*fibonacci { |base=100, size=10|
 		var fib = [1, 1];

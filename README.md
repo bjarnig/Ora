@@ -1,10 +1,10 @@
 # Ora
 
-A comprehensive SuperCollider library for generating, transforming, playing, and sequencing frequency arrays for spectral composition and sound design.
+A SuperCollider library for generating, transforming, playing, and sequencing frequency arrays.
 
 ## Overview
 
-Ora provides four interconnected classes for working with frequency sets in spectral music composition:
+Ora provides four interconnected classes for working with frequency sets in composition:
 
 - **Ora** - Transform frequency arrays using serial techniques and parametric operations
 - **OraGen** - Generate dissonant and inharmonic pitch sets
@@ -13,10 +13,7 @@ Ora provides four interconnected classes for working with frequency sets in spec
 
 ## Installation
 
-1. Copy the entire `Ora` folder to your SuperCollider Extensions directory:
-   - macOS: `~/Library/Application Support/SuperCollider/Extensions/`
-   - Linux: `~/.local/share/SuperCollider/Extensions/`
-   - Windows: `%APPDATA%\SuperCollider\Extensions\`
+1. Copy the entire `Ora` folder to your SuperCollider Extensions directory
 
 2. Recompile the class library (Language > Recompile Class Library)
 
@@ -56,8 +53,6 @@ The main class for transforming frequency arrays. All methods are chainable and 
 
 #### Serial Transformations
 
-Classic serial music techniques adapted for frequency space:
-
 - **retrograde()** - Reverse the frequency sequence
 - **inversion(pivot)** - Mirror frequencies around a pivot point
 - **retrogradeInversion(pivot)** - Reverse and invert
@@ -65,8 +60,6 @@ Classic serial music techniques adapted for frequency space:
 - **transposition(shift)** - Add a constant shift to all frequencies
 
 #### Parametric Transformations
-
-Continuous transformations that reshape the frequency spectrum:
 
 - **affineLog(scale, shift)** - Scale and shift in log-frequency space
 - **centroidDilation(r, curve)** - Expand/compress around the log-centroid
@@ -83,8 +76,6 @@ Continuous transformations that reshape the frequency spectrum:
 - **formantGap(fHole, bw, amount)** - Create formant-like spectral gaps
 
 ### OraGen - Frequency Set Generation
-
-Generate diverse starting materials for spectral composition:
 
 - **cluster(base, size, spread)** - Microtonal clusters
 - **inharmonic(fundamental, size, stretch)** - Non-integer overtone series
@@ -137,8 +128,6 @@ Manage collections of Ora transformations and visualize their evolution:
 
 ## Included SynthDefs
 
-The library includes six specialized SynthDefs optimized for spectral composition:
-
 - **drbase** - Clean sine with subtle noise modulation and evolving character
 - **drpm** - Phase modulation with amplitude tremolo
 - **drsoft** - Soft sine with gentle noise crossfade
@@ -150,7 +139,7 @@ Load them with: `Ora.addSynths;`
 
 ## Examples
 
-The library includes a comprehensive `examples.scd` file with over 50 working examples demonstrating:
+The library includes an `examples.scd` file with over 50 working examples demonstrating:
 
 - Serial transformations (retrograde, inversion, rotation)
 - Parametric transformations (dilation, warping, morphing)
@@ -194,15 +183,6 @@ The typical Ora workflow:
 )
 ```
 
-## Design Philosophy
-
-Ora bridges two musical traditions:
-
-1. **Serial Music** - Classical transformations (retrograde, inversion) adapted for frequency space
-2. **Spectral Music** - Continuous transformations in log-frequency and perceptual domains
-
-All transformations preserve array size and operate on frequency values (Hz), making them compatible with any synthesis technique in SuperCollider.
-
 ## Technical Notes
 
 - All transformations work in-place and return `this` for method chaining
@@ -210,10 +190,6 @@ All transformations preserve array size and operate on frequency values (Hz), ma
 - OraPlay filters playback to 40-14000 Hz range
 - Transformations operate on the `items` instance variable
 - Compatible with plain arrays: `OraPlay.new([100, 200, 300])`
-
-## Credits
-
-Developed for spectral composition and sound design in SuperCollider.
 
 ## License
 
