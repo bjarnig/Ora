@@ -1,9 +1,16 @@
 OraPlay {
 	var <>ora;
 	var <>routine;
+	var <>minFreq;
+	var <>maxFreq;
 
-	*new { |oraObject|
-		^super.newCopyArgs(oraObject);
+	*new { |oraObject, minFreq = 40, maxFreq = 14000|
+		^super.newCopyArgs(oraObject).init(minFreq, maxFreq);
+	}
+
+	init { |argMinFreq, argMaxFreq|
+		this.minFreq = argMinFreq;
+		this.maxFreq = argMaxFreq;
 	}
 
 	// Helper: stereo spread (index → pan)
@@ -21,9 +28,9 @@ OraPlay {
 
 	// Get the frequency array from Ora object and filter valid range
 	getFreqs {
-		var freqs = if (ora.isKindOf(Ora)) { ora.items } { ora };
-		// Filter frequencies: remove below 40 Hz and above 14000 Hz
-		^freqs.select { |f| (f >= 40) and: (f <= 14000) };
+		var freqs = if (this.ora.isKindOf(Ora)) { this.ora.items } { this.ora };
+		// Filter frequencies based on minFreq and maxFreq
+		^freqs.select { |f| (f >= this.minFreq) and: (f <= this.maxFreq) };
 	}
 
 	// --- Play cluster ascending (default)
