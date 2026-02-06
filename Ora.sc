@@ -354,6 +354,107 @@ Ora {
 		^this;
 	}
 
+	cluster { |numClusters = 3, spread = 50, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		var centers = numClusters.collect { items.choose };
+		items = items.collect { |f|
+			var center = centers.choose;
+			center + rrand(spread.neg, spread);
+		};
+		^this;
+	}
+
+	detune { |cents = 10, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		items = items.collect { |f|
+			f * (2 ** (rrand(cents.neg, cents) / 1200));
+		};
+		^this;
+	}
+
+	shatter { |pieces = 3, spread = 0.05, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		var shattered = [];
+		items.do { |f|
+			pieces.do {
+				shattered = shattered.add(f * rrand(1 - spread, 1 + spread));
+			};
+		};
+		items = shattered;
+		^this;
+	}
+
+	crunch { |factor = 0.1, center = nil|
+		var c = center ?? { (items.minItem + items.maxItem) * 0.5 };
+		var range = items.maxItem - items.minItem;
+		items = items.collect { |f|
+			c + ((f - c) * factor);
+		};
+		^this;
+	}
+
+	chaos { |amount = 0.3, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		var sorted = items.copy.sort;
+		items = items.collect { |f, i|
+			var idx = (i + rrand(0, amount * items.size).floor).wrap(0, items.size - 1);
+			sorted[idx] * rrand(0.95, 1.05);
+		};
+		^this;
+	}
+
+	wobble { |amount = 0.5, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		items = items.collect { |f, i|
+			var drift = sin(i * 2pi / items.size * rrand(2, 6)) * amount;
+			f * (1 + drift);
+		};
+		^this;
+	}
+
+	inharmonic { |amount = 0.5, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		var base = items.minItem;
+		items = items.collect { |f|
+			var ratio = f / base;
+			var detuned = ratio + (rrand(-0.5, 0.5) * amount);
+			base * detuned.max(0.1);
+		};
+		^this;
+	}
+
+	fracture { |splits = 2, jitter = 0.02, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		var fractured = [];
+		items.do { |f|
+			var step = f * jitter;
+			splits.do { |i|
+				fractured = fractured.add(f + (step * (i - (splits * 0.5))));
+			};
+		};
+		items = fractured;
+		^this;
+	}
+
+	crush { |bands = 5|
+		var min = items.minItem, max = items.maxItem;
+		var bandSize = (max - min) / bands;
+		items = items.collect { |f|
+			var band = ((f - min) / bandSize).floor;
+			min + (band * bandSize) + (bandSize * 0.5);
+		};
+		^this;
+	}
+
+	drift { |speed = 0.1, depth = 50, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		items = items.collect { |f, i|
+			var phase = i * speed;
+			f + (sin(phase) * depth * rrand(0.5, 1.5));
+		};
+		^this;
+	}
+
 	// Formant gap transformer (can be chained with other methods)
 	formantGap { |fHole = 480, bw = 140, amount = 0.18|
 		var f0 = items;
