@@ -227,6 +227,133 @@ Ora {
 		^this;
 	}
 
+	shift { |hz = 0, ratio = 1.0|
+		items = items.collect { |f| (f * ratio) + hz };
+		^this;
+	}
+
+	expand { |center = nil, amount = 1.5|
+		var c = center ?? { (items.minItem + items.maxItem) * 0.5 };
+		items = items.collect { |f| c + ((f - c) * amount) };
+		^this;
+	}
+
+	contract { |center = nil, amount = 0.5|
+		var c = center ?? { (items.minItem + items.maxItem) * 0.5 };
+		items = items.collect { |f| c + ((f - c) * amount) };
+		^this;
+	}
+
+	fluctuate { |amount = 0.05, seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		items = items.collect { |f| f * rrand(1 - amount, 1 + amount) };
+		^this;
+	}
+
+	mirror { |center = nil|
+		var c = center ?? { (items.minItem + items.maxItem) * 0.5 };
+		items = items.collect { |f| (2 * c - f).max(1e-6) };
+		^this;
+	}
+
+	bounce { |low = nil, high = nil|
+		var min = low ?? { items.minItem };
+		var max = high ?? { items.maxItem };
+		items = items.collect { |f|
+			var range = max - min;
+			var folded = f.fold(min, max);
+			folded;
+		};
+		^this;
+	}
+
+	stretch { |power = 2.0, anchor = nil|
+		var f = items;
+		var a = anchor ?? { f.minItem };
+		var maxDist = (f.maxItem - a).abs;
+		items = f.collect { |x|
+			var dist = x - a;
+			var norm = (dist / maxDist).clip(-1, 1);
+			var stretched = norm.sign * (norm.abs ** power);
+			a + (stretched * maxDist);
+		};
+		^this;
+	}
+
+	fold { |low = nil, high = nil|
+		var min = low ?? { items.minItem };
+		var max = high ?? { items.maxItem };
+		items = items.collect { |f| f.fold(min, max) };
+		^this;
+	}
+
+	warp { |curve = 1.0, center = nil|
+		var f = items;
+		var c = center ?? { (f.minItem + f.maxItem) * 0.5 };
+		var min = f.minItem, max = f.maxItem;
+		items = f.collect { |x|
+			var norm = (x - min) / (max - min);
+			var warped = norm ** curve;
+			min + (warped * (max - min));
+		};
+		^this;
+	}
+
+	rotate { |steps = 1|
+		items = items.rotate(steps);
+		^this;
+	}
+
+	scramble { |seed = nil|
+		if (seed.notNil) { thisThread.randSeed = seed };
+		items = items.scramble;
+		^this;
+	}
+
+	reverse {
+		items = items.reverse;
+		^this;
+	}
+
+	pinch { |center = nil, amount = 0.5|
+		var c = center ?? { (items.minItem + items.maxItem) * 0.5 };
+		items = items.collect { |f|
+			var dist = f - c;
+			var factor = 1 / (1 + (amount * dist.abs / c));
+			c + (dist * factor);
+		};
+		^this;
+	}
+
+	splay { |minGap = 10|
+		var sorted = items.copy.sort;
+		var adjusted = [sorted[0]];
+		(1..sorted.size-1).do { |i|
+			var prev = adjusted[i-1];
+			var curr = sorted[i];
+			if (curr - prev < minGap) {
+				adjusted = adjusted.add(prev + minGap);
+			} {
+				adjusted = adjusted.add(curr);
+			};
+		};
+		var orderMap = items.order;
+		var out = Array.newClear(items.size);
+		orderMap.do { |idx, i| out[idx] = adjusted[i] };
+		items = out;
+		^this;
+	}
+
+	tilt { |pivot = nil, low = 0.8, high = 1.2|
+		var p = pivot ?? { items.size * 0.5 };
+		items = items.collect { |f, i|
+			var t = i / (items.size - 1).max(1);
+			var factor = t.linlin(0, 1, low, high);
+			f * factor;
+		};
+		^this;
+	}
+
 	// Formant gap transformer (can be chained with other methods)
 	formantGap { |fHole = 480, bw = 140, amount = 0.18|
 		var f0 = items;

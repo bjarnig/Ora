@@ -29,7 +29,6 @@ OraPlay {
 		^Synth(synthdef, [\freq, freq, \amp, amp, \dur, dur, \out, channelValue]);
 	}
 
-	// Stop current routine
 	stop {
 		if (routine.notNil) {
 			routine.stop;
@@ -50,7 +49,7 @@ OraPlay {
 	// More aggressive attenuation for high frequencies
 	ampCompensation { |freq, amount=1.0|
 		var scaleFactor;
-		
+
 		// Aggressive equal-loudness compensation
 		// Peak sensitivity around 2-3 kHz (factor = 1.0)
 		// Strong attenuation of higher frequencies
@@ -61,7 +60,7 @@ OraPlay {
 			}
 			{ freq < 1000 } {
 				// Low-mid: gradually increase to peak
-				0.85 + ((freq - 200) / 800 * 0.15); // 0.85 to 1.0
+				0.85 + ((freq - 200) / 800 * 0.1); // 0.85 to 1.0
 			}
 			{ freq < 3000 } {
 				// Peak sensitivity range: minimal adjustment
@@ -79,7 +78,7 @@ OraPlay {
 				// Very high: very strong reduction
 				(0.15 - ((freq - 10000) / 10000 * 0.12)).clip(0.2, 0.25);
 			};
-		
+
 		// Amount controls how much compensation to apply (0 = none, 1 = full)
 		^scaleFactor.linlin(0, 1, 1, scaleFactor).blend(1.0, 1.0 - amount);
 	}
@@ -123,14 +122,13 @@ OraPlay {
 					thisDur = durFrom + ((durTo - durFrom) * pos);
 					thisOffset = offsetFrom + ((offsetTo - offsetFrom) * pos);
 				};
-				
+
 				// Apply perceptual amplitude compensation if enabled
 				if (ampComp > 0) {
 					compFactor = this.ampCompensation(f, ampComp);
 					thisAmp = thisAmp * compFactor;
 				};
-				
-				("freq:"+f+"dur:"+thisDur+"amp:"+thisAmp+"channel:"+channels[i]+"wait:"+thisOffset).postln;
+
 				this.playSynth(synthdef, f, thisAmp, thisDur, channels[i]);
 				thisOffset.wait;
 			};
@@ -315,4 +313,5 @@ OraPlay {
 		}).play;
 		^routine;
 	}
+
 }

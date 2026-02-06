@@ -29,6 +29,22 @@ SynthDef(\drpm, { |out=0, freq=440, amp=0.045, dur=10, atk=0.5, rel=4.5, pan=0, 
 	Out.ar(out, sig);
 }).add;
 
+SynthDef(\drpmg, { |out=0, freq=440, amp=0.045, dur=10, atk=0.5, rel=4.5, pan=0, mod=7,gate=1|
+	var dec = dur - (atk + rel);
+	var env = EnvGen.kr(Env.asr(atk, 1, rel, [-2, 2]), gate, doneAction: 2);
+	var sig = PMOsc.ar(freq, freq * 0.001, 0.1) * amp * env;
+	sig = sig * SinOsc.ar(mod).range(0.5, 1.0) * Lag.ar(WhiteNoise.ar().range(0.8, 1.0));
+	Out.ar(out, sig);
+}).add;
+
+SynthDef(\drpmgd, { |out=0, freq=440, amp=0.045, dur=10, atk=0.5, rel=4.5, pan=0, mod=7,gate=1|
+	var dec = dur - (atk + rel);
+	var env = EnvGen.kr(Env.adsr(atk, atk*2, 0.5, rel, [-2, 2]), gate, doneAction: 2);
+	var sig = PMOsc.ar(freq, freq * 0.001, 0.1) * amp * env;
+	sig = sig * SinOsc.ar(mod).range(0.5, 1.0) * Lag.ar(WhiteNoise.ar().range(0.8, 1.0));
+	Out.ar(out, sig);
+}).add;
+
 // drpm - variation a
 SynthDef(\drpmvara, { |out=0, freq=440, amp=0.045, dur=10, atk=0.5, rel=4.5, pan=0, mod=15|
 	var dec = dur - (atk + rel);
@@ -97,4 +113,4 @@ SynthDef(\drdfm, {
 	Out.ar(out, Mix(sig) * env);
 }).add;
 
-"Ora: 6 SynthDefs loaded from OraSynths.scd (drbase, drpm, drsoft, drgend, drimp, drdfm)".postln;
+"Ora: 9 SynthDefs loaded (drbase, drpm, drpmg, drpmgd, drpmvara, drsoft, drgend, drimp, drdfm)".postln;

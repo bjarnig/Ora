@@ -144,11 +144,11 @@ OraRatios {
 	}
 
 	*equalTemperament { |startFreq=65.55, semitones|
+		var ratios = [];
+		var prevSemi = 0;
 		if (semitones.isNil) {
 			semitones = [2, 4, 5, 7, 9, 11, 12];
 		};
-		var ratios = [];
-		var prevSemi = 0;
 		semitones.do { |semi|
 			ratios = ratios.add(2 ** ((semi - prevSemi) / 12));
 			prevSemi = semi;
