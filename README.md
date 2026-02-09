@@ -100,7 +100,7 @@ The main class for transforming frequency arrays. All methods are chainable and 
 
 #### Array Manipulation
 
-- **rotate(steps)** - Circular rotation of array
+- **rotateSteps(steps)** - Circular rotation of array by integer steps
 - **reverse()** - Reverse array order
 - **scramble(seed)** - Random shuffle
 - **splay(minGap)** - Ensure minimum frequency spacing

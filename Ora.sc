@@ -299,7 +299,7 @@ Ora {
 		^this;
 	}
 
-	rotate { |steps = 1|
+	rotateSteps { |steps = 1|
 		items = items.rotate(steps);
 		^this;
 	}
@@ -328,6 +328,7 @@ Ora {
 	splay { |minGap = 10|
 		var sorted = items.copy.sort;
 		var adjusted = [sorted[0]];
+		var orderMap, out;
 		(1..sorted.size-1).do { |i|
 			var prev = adjusted[i-1];
 			var curr = sorted[i];
@@ -337,8 +338,8 @@ Ora {
 				adjusted = adjusted.add(curr);
 			};
 		};
-		var orderMap = items.order;
-		var out = Array.newClear(items.size);
+		orderMap = items.order;
+		out = Array.newClear(items.size);
 		orderMap.do { |idx, i| out[idx] = adjusted[i] };
 		items = out;
 		^this;
@@ -355,8 +356,9 @@ Ora {
 	}
 
 	cluster { |numClusters = 3, spread = 50, seed = nil|
+		var centers;
 		if (seed.notNil) { thisThread.randSeed = seed };
-		var centers = numClusters.collect { items.choose };
+		centers = numClusters.collect { items.choose };
 		items = items.collect { |f|
 			var center = centers.choose;
 			center + rrand(spread.neg, spread);
@@ -373,8 +375,8 @@ Ora {
 	}
 
 	shatter { |pieces = 3, spread = 0.05, seed = nil|
-		if (seed.notNil) { thisThread.randSeed = seed };
 		var shattered = [];
+		if (seed.notNil) { thisThread.randSeed = seed };
 		items.do { |f|
 			pieces.do {
 				shattered = shattered.add(f * rrand(1 - spread, 1 + spread));
@@ -394,8 +396,9 @@ Ora {
 	}
 
 	chaos { |amount = 0.3, seed = nil|
+		var sorted;
 		if (seed.notNil) { thisThread.randSeed = seed };
-		var sorted = items.copy.sort;
+		sorted = items.copy.sort;
 		items = items.collect { |f, i|
 			var idx = (i + rrand(0, amount * items.size).floor).wrap(0, items.size - 1);
 			sorted[idx] * rrand(0.95, 1.05);
@@ -413,8 +416,9 @@ Ora {
 	}
 
 	inharmonic { |amount = 0.5, seed = nil|
+		var base;
 		if (seed.notNil) { thisThread.randSeed = seed };
-		var base = items.minItem;
+		base = items.minItem;
 		items = items.collect { |f|
 			var ratio = f / base;
 			var detuned = ratio + (rrand(-0.5, 0.5) * amount);
@@ -424,8 +428,8 @@ Ora {
 	}
 
 	fracture { |splits = 2, jitter = 0.02, seed = nil|
-		if (seed.notNil) { thisThread.randSeed = seed };
 		var fractured = [];
+		if (seed.notNil) { thisThread.randSeed = seed };
 		items.do { |f|
 			var step = f * jitter;
 			splits.do { |i|
