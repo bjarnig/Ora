@@ -1,6 +1,6 @@
 # Ora
 
-A SuperCollider library for generating, transforming, playing, and sequencing frequency arrays.
+A set of processes for generating, transforming, playing, and sequencing frequency arrays.
 
 ## Overview
 
@@ -22,7 +22,7 @@ Ora provides six classes for working with frequency sets in composition:
 3. Load the included SynthDefs:
 
 ```supercollider
-Ora.addSynths;  // Adds 9 SynthDefs optimized for spectral playback
+Ora.addSynths;  // Adds 9 SynthDefs for spectral playback
 ```
 
 ## Quick Start
