@@ -1,6 +1,6 @@
 # Ora
 
-A set of processes for generating, transforming, playing, and sequencing frequency arrays.
+A set of processes for generating, transforming, and sequencing frequency arrays.
 
 ## Overview
 
