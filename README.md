@@ -18,7 +18,7 @@ Ora provides classes for working with frequency sets in composition:
 Copy the entire `Ora` folder to your SuperCollider Extensions directory
 
 ```supercollider
-Ora.addSynths;  // Adds 9 SynthDefs for spectral playback
+Ora.addSynths;
 ```
 
 ## Start
@@ -116,6 +116,14 @@ The main class for transforming frequency arrays. All methods are chainable and 
 - **crush(bands)** - Quantize to frequency bands
 - **drift(speed, depth, seed)** - Phase-based frequency drift
 
+#### Visualization
+
+- **plot()** - Basic array plot
+- **plotStems()** - Stem plot with log-scale Y axis and color-coded frequency dots
+- **plotSpectrum()** - Log-frequency spectral view showing frequency distribution
+- **plotIntervals()** - Dual view showing Hz intervals and ratios between sorted frequencies
+- **plotCompare(other, nameA, nameB)** - Side-by-side comparison of two Ora objects
+
 ### OraGen - Frequency Set Generation
 
 - **cluster(base, size, spread)** - Microtonal clusters
@@ -162,8 +170,9 @@ Manage collections of Ora transformations and visualize their evolution:
 - **add(ora)** - Add an Ora to the sequence
 - **at(index)** - Access specific Ora by index
 - **current()** / **next()** / **prev()** / **goto(index)** - Navigate sequence
-- **plot()** - Multi-window visualization (each Ora separately)
-- **plotCombined()** - Single-window stacked visualization
+- **plot()** - Each Ora as a separate stem plot window
+- **plotCombined()** - Single-window stacked bar view
+- **plotOverlay()** - All Oras overlaid in one window with color-coded stems
 - **playSequence(method, waitTime, args)** - Play through sequence
 - **playSequenceWithMethods(methodsArray, waitTime, argsArray)** - Different method per Ora
 - **info()** - Print sequence information
@@ -179,6 +188,8 @@ Build frequency arrays from intervallic ratios for precise tuning control:
 - **OraRatios.fromFreqs(freqArray)** - Analyze existing frequencies to extract ratios
 - **printAnalysis()** - Display detailed ratio breakdown
 - **buildFreqs()** - Rebuild frequency array from current ratios
+- **plot()** - Stem plot of generated frequencies
+- **plotRatios()** - Intervals and ratios visualization
 
 #### Manipulation
 
@@ -385,14 +396,10 @@ The typical Ora workflow:
 )
 ```
 
-## Technical Notes
+## Something
 
 - All transformations work in-place and return `this` for method chaining
 - Frequency arrays are clipped to safe ranges (1e-6 to 1e9 Hz internally)
 - OraPlay filters playback to 40-14000 Hz range
 - Transformations operate on the `items` instance variable
 - Compatible with plain arrays: `OraPlay.new([100, 200, 300])`
-
-## License
-
-Free to use

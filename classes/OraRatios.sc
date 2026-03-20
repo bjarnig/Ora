@@ -163,6 +163,16 @@ OraRatios {
 		^this.new(startFreq, ratios);
 	}
 
+	plot { |name = "OraRatios", bounds|
+		if (freqs.isNil) { this.buildFreqs };
+		^Ora(freqs).plotStems(name, bounds);
+	}
+
+	plotRatios { |name = "OraRatios", bounds|
+		if (freqs.isNil) { this.buildFreqs };
+		^Ora(freqs).plotIntervals(name, bounds);
+	}
+
 	asOra {
 		if (freqs.isNil) {
 			this.buildFreqs;

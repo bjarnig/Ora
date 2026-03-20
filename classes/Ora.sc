@@ -479,13 +479,265 @@ Ora {
 		^items.copy;
 	}
 
-	// Plot the items
 	plot { |name, bounds, discrete = false, numChannels, minval, maxval, separately = false, parent, labels|
 		items.plot(name, bounds, discrete, numChannels, minval, maxval, separately, parent);
 		^this;
 	}
 
-	// Print items for debugging
+	plotStems { |name = "Ora", bounds|
+		var w, width, height, minF, maxF, sorted, uv;
+		sorted = items.copy.sort;
+		minF = sorted.minItem;
+		maxF = sorted.maxItem;
+		width = bounds !? { bounds.width } ?? { 700 };
+		height = bounds !? { bounds.height } ?? { 350 };
+
+		w = Window(name ++ " (" ++ items.size ++ " freqs, " ++
+			minF.round(0.1) ++ "–" ++ maxF.round(0.1) ++ " Hz)",
+			Rect(200, 200, width, height));
+
+		uv = UserView(w, Rect(0, 0, width, height));
+		uv.background = Color.grey(0.12);
+		uv.drawFunc = {
+			var pad = 50, plotW = width - (pad * 2), plotH = height - (pad * 2);
+			var logMin = minF.max(1).log, logMax = maxF.max(2).log;
+
+			Pen.color = Color.grey(0.3);
+			5.do { |i|
+				var y = pad + (plotH * i / 4);
+				Pen.line(pad @ y, (pad + plotW) @ y);
+				Pen.stroke;
+				var freq = exp(logMax - ((logMax - logMin) * i / 4));
+				Pen.color = Color.grey(0.5);
+				Pen.stringAtPoint(freq.round(0.1).asString ++ " Hz",
+					2 @ (y - 6), Font("Menlo", 9));
+				Pen.color = Color.grey(0.3);
+			};
+
+			items.do { |f, i|
+				var x = pad + (i / (items.size - 1).max(1) * plotW);
+				var normY = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
+				var y = pad + plotH - (normY * plotH);
+				var hue = normY.linlin(0, 1, 0.55, 0.0);
+
+				Pen.color = Color.hsv(hue, 0.8, 0.95, 0.7);
+				Pen.line(x @ (pad + plotH), x @ y);
+				Pen.width = 2;
+				Pen.stroke;
+
+				Pen.color = Color.hsv(hue, 0.9, 1.0);
+				Pen.fillOval(Rect(x - 3, y - 3, 6, 6));
+
+				if (items.size <= 24) {
+					Pen.color = Color.grey(0.6);
+					Pen.stringAtPoint(f.round(0.1).asString,
+						(x - 10) @ (y - 14), Font("Menlo", 8));
+				};
+			};
+
+			Pen.color = Color.grey(0.5);
+			Pen.stringAtPoint("index", ((pad + plotW) / 2) @ (height - 14), Font("Menlo", 9));
+		};
+		w.front;
+		^this;
+	}
+
+	plotCompare { |other, nameA = "A", nameB = "B", bounds|
+		var w, width, height, allFreqs, minF, maxF, uv;
+		var itemsB = if (other.isKindOf(Ora)) { other.items } { other };
+		allFreqs = items ++ itemsB;
+		minF = allFreqs.minItem;
+		maxF = allFreqs.maxItem;
+		width = bounds !? { bounds.width } ?? { 800 };
+		height = bounds !? { bounds.height } ?? { 400 };
+
+		w = Window("Compare: " ++ nameA ++ " vs " ++ nameB,
+			Rect(200, 200, width, height));
+
+		uv = UserView(w, Rect(0, 0, width, height));
+		uv.background = Color.grey(0.12);
+		uv.drawFunc = {
+			var pad = 50, plotW = width - (pad * 2), plotH = height - (pad * 2);
+			var logMin = minF.max(1).log, logMax = maxF.max(2).log;
+			var halfW = plotW / 2 - 10;
+
+			// Left: A
+			Pen.color = Color.grey(0.5);
+			Pen.stringAtPoint(nameA, (pad + halfW / 2 - 5) @ 8, Font("Menlo", 12));
+
+			items.do { |f, i|
+				var x = pad + (i / (items.size - 1).max(1) * halfW);
+				var normY = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
+				var y = pad + plotH - (normY * plotH);
+
+				Pen.color = Color.new(0.3, 0.7, 1.0, 0.7);
+				Pen.line(x @ (pad + plotH), x @ y);
+				Pen.width = 2;
+				Pen.stroke;
+				Pen.color = Color.new(0.3, 0.7, 1.0);
+				Pen.fillOval(Rect(x - 3, y - 3, 6, 6));
+			};
+
+			// Right: B
+			Pen.color = Color.grey(0.5);
+			Pen.stringAtPoint(nameB, (pad + halfW + 20 + halfW / 2 - 5) @ 8, Font("Menlo", 12));
+
+			itemsB.do { |f, i|
+				var x = pad + halfW + 20 + (i / (itemsB.size - 1).max(1) * halfW);
+				var normY = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
+				var y = pad + plotH - (normY * plotH);
+
+				Pen.color = Color.new(1.0, 0.5, 0.3, 0.7);
+				Pen.line(x @ (pad + plotH), x @ y);
+				Pen.width = 2;
+				Pen.stroke;
+				Pen.color = Color.new(1.0, 0.5, 0.3);
+				Pen.fillOval(Rect(x - 3, y - 3, 6, 6));
+			};
+
+			// Divider
+			Pen.color = Color.grey(0.3);
+			Pen.line((pad + halfW + 10) @ pad, (pad + halfW + 10) @ (pad + plotH));
+			Pen.stroke;
+
+			// Y axis labels
+			5.do { |i|
+				var y = pad + (plotH * i / 4);
+				Pen.color = Color.grey(0.3);
+				Pen.line(pad @ y, (pad + plotW) @ y);
+				Pen.stroke;
+				var freq = exp(logMax - ((logMax - logMin) * i / 4));
+				Pen.color = Color.grey(0.5);
+				Pen.stringAtPoint(freq.round(0.1).asString,
+					2 @ (y - 6), Font("Menlo", 9));
+			};
+		};
+		w.front;
+		^this;
+	}
+
+	plotSpectrum { |name = "Ora Spectrum", bounds|
+		var w, width, height, sorted, minF, maxF, uv;
+		sorted = items.copy.sort;
+		minF = sorted.minItem;
+		maxF = sorted.maxItem;
+		width = bounds !? { bounds.width } ?? { 700 };
+		height = bounds !? { bounds.height } ?? { 300 };
+
+		w = Window(name ++ " (" ++ items.size ++ " freqs)",
+			Rect(200, 200, width, height));
+
+		uv = UserView(w, Rect(0, 0, width, height));
+		uv.background = Color.grey(0.12);
+		uv.drawFunc = {
+			var pad = 50, plotW = width - (pad * 2), plotH = height - (pad * 2);
+			var logMin = (minF * 0.8).max(1).log, logMax = (maxF * 1.2).log;
+
+			// Frequency axis markers
+			[20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000].do { |f|
+				if (f >= (minF * 0.8) and: { f <= (maxF * 1.2) }) {
+					var x = pad + ((f.log - logMin) / (logMax - logMin) * plotW);
+					Pen.color = Color.grey(0.22);
+					Pen.line(x @ pad, x @ (pad + plotH));
+					Pen.stroke;
+					Pen.color = Color.grey(0.45);
+					Pen.stringAtPoint(
+						if (f >= 1000) { (f / 1000).asString ++ "k" } { f.asString },
+						(x - 8) @ (pad + plotH + 4), Font("Menlo", 9));
+				};
+			};
+
+			// Frequency lines
+			sorted.do { |f, i|
+				var normX = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
+				var x = pad + (normX * plotW);
+				var hue = i / sorted.size.max(1) * 0.7;
+
+				Pen.color = Color.hsv(hue, 0.85, 1.0, 0.8);
+				Pen.line(x @ (pad + plotH), x @ pad);
+				Pen.width = 3;
+				Pen.stroke;
+
+				if (items.size <= 20) {
+					Pen.color = Color.grey(0.6);
+					Pen.push;
+					Pen.translate(x + 3, pad + plotH - 20);
+					Pen.rotate(-1.3);
+					Pen.stringAtPoint(f.round(0.1).asString, 0 @ 0, Font("Menlo", 8));
+					Pen.pop;
+				};
+			};
+
+			Pen.color = Color.grey(0.5);
+			Pen.stringAtPoint("Hz (log)", ((pad + plotW) / 2) @ (height - 14), Font("Menlo", 9));
+		};
+		w.front;
+		^this;
+	}
+
+	plotIntervals { |name = "Ora Intervals", bounds|
+		var w, width, height, sorted, intervals, ratios, uv;
+		sorted = items.copy.sort;
+		intervals = (sorted.size - 1).collect { |i| sorted[i + 1] - sorted[i] };
+		ratios = (sorted.size - 1).collect { |i| sorted[i + 1] / sorted[i] };
+		width = bounds !? { bounds.width } ?? { 700 };
+		height = bounds !? { bounds.height } ?? { 400 };
+
+		w = Window(name, Rect(200, 200, width, height));
+
+		uv = UserView(w, Rect(0, 0, width, height));
+		uv.background = Color.grey(0.12);
+		uv.drawFunc = {
+			var pad = 50, plotW = width - (pad * 2), plotH = (height - (pad * 3)) / 2;
+			var maxInterval, maxRatio;
+
+			// Top: intervals in Hz
+			maxInterval = intervals.maxItem.max(1);
+			Pen.color = Color.grey(0.5);
+			Pen.stringAtPoint("Intervals (Hz)", (pad) @ 8, Font("Menlo", 10));
+
+			intervals.do { |iv, i|
+				var x = pad + (i / intervals.size.max(1) * plotW);
+				var barW = (plotW / intervals.size) * 0.7;
+				var h = iv / maxInterval * plotH;
+				var hue = (iv / maxInterval).linlin(0, 1, 0.35, 0.0);
+
+				Pen.color = Color.hsv(hue, 0.8, 0.9, 0.8);
+				Pen.fillRect(Rect(x, pad + plotH - h, barW, h));
+
+				if (intervals.size <= 20) {
+					Pen.color = Color.grey(0.6);
+					Pen.stringAtPoint(iv.round(0.1).asString,
+						x @ (pad + plotH - h - 12), Font("Menlo", 8));
+				};
+			};
+
+			// Bottom: ratios
+			maxRatio = ratios.maxItem.max(1.01);
+			Pen.color = Color.grey(0.5);
+			Pen.stringAtPoint("Ratios", (pad) @ (pad * 2 + plotH + 4), Font("Menlo", 10));
+
+			ratios.do { |r, i|
+				var yOff = pad * 2 + plotH + 20;
+				var x = pad + (i / ratios.size.max(1) * plotW);
+				var barW = (plotW / ratios.size) * 0.7;
+				var h = ((r - 1) / (maxRatio - 1)).max(0) * plotH;
+				var hue = ((r - 1) / (maxRatio - 1)).linlin(0, 1, 0.55, 0.0);
+
+				Pen.color = Color.hsv(hue, 0.7, 0.9, 0.8);
+				Pen.fillRect(Rect(x, yOff + plotH - h, barW, h));
+
+				if (ratios.size <= 20) {
+					Pen.color = Color.grey(0.6);
+					Pen.stringAtPoint(r.round(0.001).asString,
+						x @ (yOff + plotH - h - 12), Font("Menlo", 8));
+				};
+			};
+		};
+		w.front;
+		^this;
+	}
+
 	printItems {
 		items.postln;
 		^this;

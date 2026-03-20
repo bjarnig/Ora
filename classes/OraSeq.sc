@@ -63,82 +63,90 @@ OraSeq {
 		players.do { |player| player.stop };
 	}
 
-	// Multi-plot: visualize the evolution of Oras in the sequence
-	// Each Ora gets its own window, displayed as an envelope
-	plot { |name = "OraSeq", bounds, minval, maxval|
-		var allItems, colors;
-		
-		if (oras.isEmpty) {
-			"OraSeq is empty, nothing to plot".warn;
-			^this;
-		};
-
-		// Get all frequency arrays
-		allItems = oras.collect { |ora| ora.items };
-		
-		// Generate colors for each Ora
-		colors = allItems.size.collect { |i| 
-			Color.hsv(i / allItems.size, 0.7, 0.9)
-		};
-
-		// Create separate plotter for each Ora
-		oras.do { |ora, i|
-			var plotter, freqRange;
-			
-			// Calculate frequency range for this Ora
-			freqRange = "(" ++ ora.items.minItem.round(0.1).asString ++ " - " 
-				++ ora.items.maxItem.round(0.1).asString ++ " Hz)";
-			
-			plotter = Plotter(name ++ " [" ++ i ++ "] " ++ freqRange, bounds: bounds);
-			plotter.value = ora.items;
-			plotter.plotMode = \levels;  // Connected line style
-			plotter.plotColor = colors[i];
-			// Let each plot auto-scale to its own range (unless minval/maxval specified)
-			if (minval.notNil and: maxval.notNil) {
-				plotter.specs = ControlSpec(minval, maxval, \lin);
-			};
-			plotter.refresh;
-		};
-
+	plot { |name = "OraSeq", bounds|
+		if (oras.isEmpty) { "OraSeq is empty".warn; ^this };
+		oras.do { |ora, i| ora.plotStems(name ++ " [" ++ i ++ "]", bounds) };
 		^this;
 	}
 
-	// Alternative: All Oras in one window, stacked with step/bars view
 	plotCombined { |name = "OraSeq Combined", bounds, minval, maxval|
 		var allItems, maxSize, paddedData, plotter;
-		
-		if (oras.isEmpty) {
-			"OraSeq is empty, nothing to plot".warn;
-			^this;
-		};
+		if (oras.isEmpty) { "OraSeq is empty".warn; ^this };
 
 		allItems = oras.collect { |ora| ora.items };
-		
-		// Pad arrays to same length
 		maxSize = allItems.collect(_.size).maxItem;
 		paddedData = allItems.collect { |items|
 			items ++ Array.fill(maxSize - items.size, items.last);
 		};
 
-		// Print mapping info to console
-		"===== OraSeq Combined Plot =====".postln;
-		oras.do { |ora, i|
-			var freqRange = ora.items.minItem.round(0.1).asString ++ " - " 
-				++ ora.items.maxItem.round(0.1).asString ++ " Hz";
-			("Row " ++ i ++ ": " ++ ora.items.size ++ " frequencies, range: " ++ freqRange).postln;
-		};
-		"================================".postln;
-
-		// Create plotter with step/bars view and pink color (like .plot)
 		plotter = Plotter(name, bounds: bounds);
 		plotter.value = paddedData;
-		plotter.plotMode = \bars;  // Step/bars view
-		plotter.plotColor = Color.new(1.0, 0.75, 0.8);  // Pink color
+		plotter.plotMode = \bars;
+		plotter.plotColor = Color.new(1.0, 0.75, 0.8);
 		if (minval.notNil and: maxval.notNil) {
 			plotter.specs = ControlSpec(minval, maxval, \lin);
 		};
 		plotter.refresh;
+		^this;
+	}
 
+	plotOverlay { |name = "OraSeq Overlay", bounds|
+		var w, width, height, allFreqs, minF, maxF, uv;
+		if (oras.isEmpty) { "OraSeq is empty".warn; ^this };
+
+		allFreqs = oras.collect(_.items).flat;
+		minF = allFreqs.minItem;
+		maxF = allFreqs.maxItem;
+		width = bounds !? { bounds.width } ?? { 800 };
+		height = bounds !? { bounds.height } ?? { 400 };
+
+		w = Window(name ++ " (" ++ oras.size ++ " Oras)",
+			Rect(200, 200, width, height));
+
+		uv = UserView(w, Rect(0, 0, width, height));
+		uv.background = Color.grey(0.12);
+		uv.drawFunc = {
+			var pad = 50, plotW = width - (pad * 2), plotH = height - (pad * 2);
+			var logMin = minF.max(1).log, logMax = maxF.max(2).log;
+
+			5.do { |i|
+				var y = pad + (plotH * i / 4);
+				Pen.color = Color.grey(0.22);
+				Pen.line(pad @ y, (pad + plotW) @ y);
+				Pen.stroke;
+				var freq = exp(logMax - ((logMax - logMin) * i / 4));
+				Pen.color = Color.grey(0.45);
+				Pen.stringAtPoint(freq.round(0.1).asString ++ " Hz",
+					2 @ (y - 6), Font("Menlo", 9));
+			};
+
+			oras.do { |ora, oraIdx|
+				var hue = oraIdx / oras.size.max(1);
+				var freqArr = ora.items;
+				var alpha = 0.6;
+
+				freqArr.do { |f, i|
+					var x = pad + (i / (freqArr.size - 1).max(1) * plotW);
+					var normY = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
+					var y = pad + plotH - (normY * plotH);
+
+					Pen.color = Color.hsv(hue, 0.8, 0.95, alpha);
+					Pen.line(x @ (pad + plotH), x @ y);
+					Pen.width = 2;
+					Pen.stroke;
+
+					Pen.color = Color.hsv(hue, 0.9, 1.0, alpha + 0.2);
+					Pen.fillOval(Rect(x - 2.5, y - 2.5, 5, 5));
+				};
+
+				Pen.color = Color.hsv(hue, 0.8, 0.95);
+				Pen.fillRect(Rect(width - 80, pad + (oraIdx * 16), 10, 10));
+				Pen.color = Color.grey(0.6);
+				Pen.stringAtPoint("Ora " ++ oraIdx,
+					(width - 65) @ (pad + (oraIdx * 16) - 1), Font("Menlo", 9));
+			};
+		};
+		w.front;
 		^this;
 	}
 
