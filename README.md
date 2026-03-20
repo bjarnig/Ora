@@ -4,7 +4,7 @@ A set of processes for generating, transforming, and sequencing frequency arrays
 
 ## Overview
 
-Ora provides six classes for working with frequency sets in composition:
+Ora provides classes for working with frequency sets in composition:
 
 - **Ora** - Transform frequency arrays using serial techniques and parametric operations
 - **OraGen** - Generate dissonant and inharmonic pitch sets
@@ -15,17 +15,13 @@ Ora provides six classes for working with frequency sets in composition:
 
 ## Installation
 
-1. Copy the entire `Ora` folder to your SuperCollider Extensions directory
-
-2. Recompile the class library (Language > Recompile Class Library)
-
-3. Load the included SynthDefs:
+Copy the entire `Ora` folder to your SuperCollider Extensions directory
 
 ```supercollider
 Ora.addSynths;  // Adds 9 SynthDefs for spectral playback
 ```
 
-## Quick Start
+## Start
 
 See `quickstart.scd` for an interactive introduction, or try this:
 
@@ -56,7 +52,7 @@ Ora.addSynths;
 ~p.clusterGrad(ampFrom: 0.02, ampTo: 0.05, durFrom: 8, durTo: 2, ampComp: 1.0);
 ```
 
-## Core Classes
+## Classes
 
 ### Ora - Frequency Array Transformation
 
