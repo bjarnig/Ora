@@ -11,7 +11,7 @@ Ora {
 
 	// Class method to load all SynthDefs for Ora playback
 	*addSynths {
-		var synthsFile = this.filenameSymbol.asString.dirname +/+ "OraSynths.scd";
+		var synthsFile = this.filenameSymbol.asString.dirname +/+ "../scd/OraSynths.scd";
 		synthsFile.load;
 	}
 
