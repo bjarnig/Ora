@@ -170,29 +170,28 @@ Build frequency arrays from intervallic ratios for precise tuning control:
 
 #### Creation / Analysis
 
-- **OraRatios.new(startFreq, ratios)** - Create from starting frequency and ratio array
-- **OraRatios.fromFreqs(freqArray)** - Analyze existing frequencies to extract ratios
-- **printAnalysis()** - Display detailed ratio breakdown
-- **buildFreqs()** - Rebuild frequency array from current ratios
-- **plot()** - Stem plot of generated frequencies
+- **OraRatios.new(startFreq, ratios)** - Create from starting frequency and ratios
+- **OraRatios.fromFreqs(freqArray)** - Analyze existing frequencies to ratios
+- **printAnalysis()** - Display ratio breakdown
+- **buildFreqs()** - Rebuild from current ratios
+- **plot()** - Plot of generated frequencies
 - **plotRatios()** - Intervals and ratios visualization
 
 #### Manipulation
 
-- **transpose(newStartFreq)** - Change starting frequency, preserving ratios
-- **setRatio(index, newRatio)** - Modify specific ratio
-- **scaleRatios(scalar)** - Expand/compress all intervals
-- **copy()** - Create independent copy
+- **transpose(newStartFreq)** - Change initial frequency, preserving ratios
+- **setRatio(index, newRatio)** - Modify ratio
+- **scaleRatios(scalar)** - Expand/compress intervals
+- **copy()** - Create copy
 
 #### Patterns
 
-- **microCluster(startFreq)** - Tight microtonal intervals
-- **tritone(startFreq)** - Devil's interval based
-- **irrational(startFreq)** - Golden ratio, √3, √5, √7
-- **detuned(startFreq)** - Slightly off pure intervals
-- **eerie(startFreq)** - Mixed dissonant techniques
-- **extreme(startFreq)** - Very tight clusters
-- **harmonic(startFreq, numPartials)** - Natural overtone series
+- **microCluster(startFreq)** - Microtonal intervals
+- **irrational(startFreq)** - Irrational ratio
+- **detuned(startFreq)** - Off pure intervals
+- **eerie(startFreq)** - Dissonant
+- **extreme(startFreq)** - Tight clusters
+- **harmonic(startFreq, numPartials)** - Overtone series
 - **justIntonation(startFreq)** - Pure interval ratios
 - **equalTemperament(startFreq, semitones)** - 12-TET scales
 - **random(startFreq, numRatios, minRatio, maxRatio)** - Random ratios
