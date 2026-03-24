@@ -1,6 +1,7 @@
 // combined transforms + Pbind - "Drift" f2-bind-soft, a2-nsane
 
 (
+
 ~fbind = [218.89713515951, 279.28973624342, 806.31578550988, 864.33329702304, 1369.1232279037, 1605.9, 2162.8088779968, 2269.4534277401];
 ~fnsane = [178.38052971582, 255.19458012749, 884.64258085768, 1748.7291446291, 9043.8864701014, 4473.3283429036, 1257.7392833936] * 0.5;
 
@@ -19,9 +20,11 @@ SynthDef(\softGrain, { |out=0, freq=440, amp=0.02, dur=2, atk=0.5, rel=1.5|
 }).add;
 
 Ora.addSynths;
+
 )
 
 (
+
 {
 	var pbo = Ora(~fbind);
 	OraPlay(pbo, numChannels:8)
@@ -48,9 +51,11 @@ Ora.addSynths;
 	Tdef(\ghostBind).stop;
 	Pdef(\ghostJ).stop;
 }.fork;
+
 )
 
 (
+
 {
 	OraPlay(Ora(~fbind).fluctuate(0.005), numChannels:8)
 		.clusterGrad(0.0, 0.25, 1.5, 5, \drsoft, 0.03, 2.5, 0.5);
@@ -82,11 +87,14 @@ Ora.addSynths;
 	Pdef(\pmA).stop;
 	Pdef(\pmB).stop;
 }.fork;
+
 )
 
 (
+
 OraPlay(
 	Ora((~fnsane.scramble + ~fnsane.scramble) * 0.25),
 	numChannels:8
 ).clusterGrad(0.05, 0.18, 2, 5, \drsoft, 0.05, 1.8);
+
 )
