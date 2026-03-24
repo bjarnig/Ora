@@ -4,8 +4,6 @@ A set of processes for generating, transforming, and sequencing frequency arrays
 
 ## Overview
 
-Ora provides classes for working with frequency sets in composition:
-
 - **Ora** - Transform frequency arrays using serial techniques and parametric operations
 - **OraGen** - Generate dissonant and inharmonic pitch sets
 - **OraPlay** - Play frequency arrays with diverse textural patterns
@@ -13,17 +11,7 @@ Ora provides classes for working with frequency sets in composition:
 - **OraRatios** - Build and manipulate frequency arrays from ratio relationships
 - **OraSpear** - Import and extract frequencies from SPEAR analysis files
 
-## Installation
-
-Copy the entire `Ora` folder to your SuperCollider Extensions directory
-
-```supercollider
-Ora.addSynths;
-```
-
-## Start
-
-See `quickstart.scd` for an interactive introduction, or try this:
+## Use
 
 ```supercollider
 // Load SynthDefs first
@@ -42,7 +30,7 @@ Ora.addSynths;
 ~player = OraPlay.new(~myOra);
 ~player.cluster(0.045, 4, \drsoft);
 
-// Or create dissonant clusters
+// Create dissonant clusters
 ~dissonant = Ora([100, 150, 200, 250, 300])
     .shatter(pieces: 3, spread: 0.08)
     .detune(cents: 20)
@@ -52,13 +40,11 @@ Ora.addSynths;
 ~p.clusterGrad(ampFrom: 0.02, ampTo: 0.05, durFrom: 8, durTo: 2, ampComp: 1.0);
 ```
 
-## Classes
-
-### Ora - Frequency Array Transformation
+### Ora - Transformation
 
 The main class for transforming frequency arrays. All methods are chainable and return `this`, enabling fluent transformation pipelines.
 
-#### Serial Transformations
+#### Serial
 
 - **retrograde()** - Reverse the frequency sequence
 - **inversion(pivot)** - Mirror frequencies around a pivot point
@@ -66,7 +52,7 @@ The main class for transforming frequency arrays. All methods are chainable and 
 - **rotation(n)** - Circular shift (rotate by n positions)
 - **transposition(shift)** - Add a constant shift to all frequencies
 
-#### Parametric Transformations
+#### Parametric
 
 - **affineLog(scale, shift)** - Scale and shift in log-frequency space
 - **centroidDilation(r, curve)** - Expand/compress around the log-centroid
@@ -82,7 +68,7 @@ The main class for transforming frequency arrays. All methods are chainable and 
 - **ratioSnap(base, maxNum, maxDen, amt)** - Snap to simple frequency ratios
 - **formantGap(fHole, bw, amount)** - Create formant-like spectral gaps
 
-#### Spatial Transformations
+#### Spatial
 
 - **shift(hz, ratio)** - Transpose by Hz offset and/or ratio multiplication
 - **expand(center, amount)** - Spread frequencies away from center
@@ -94,7 +80,7 @@ The main class for transforming frequency arrays. All methods are chainable and 
 - **fold(low, high)** - Fold frequencies that exceed bounds
 - **bounce(low, high)** - Fold with wrapping behavior
 
-#### Array Manipulation
+#### Arrays
 
 - **rotateSteps(steps)** - Circular rotation of array by integer steps
 - **reverse()** - Reverse array order
@@ -102,7 +88,7 @@ The main class for transforming frequency arrays. All methods are chainable and 
 - **splay(minGap)** - Ensure minimum frequency spacing
 - **tilt(pivot, low, high)** - Progressive scaling from low to high
 
-#### Dissonant Transformations
+#### Dissonant
 
 - **fluctuate(amount, seed)** - Random variation per frequency
 - **detune(cents, seed)** - Add subtle detuning in cents
@@ -124,7 +110,7 @@ The main class for transforming frequency arrays. All methods are chainable and 
 - **plotIntervals()** - Dual view showing Hz intervals and ratios between sorted frequencies
 - **plotCompare(other, nameA, nameB)** - Side-by-side comparison of two Ora objects
 
-### OraGen - Frequency Set Generation
+### Generation
 
 - **cluster(base, size, spread)** - Microtonal clusters
 - **inharmonic(fundamental, size, stretch)** - Non-integer overtone series
@@ -136,18 +122,18 @@ The main class for transforming frequency arrays. All methods are chainable and 
 - **sieve(base, moduli, size)** - Xenakis sieve technique
 - **fibonacci(base, size)** - Fibonacci sequence frequencies
 
-### OraPlay - Playback Patterns
+### OraPlay
 
 Transform Ora objects into sound using various playback strategies:
 
-#### Basic Patterns
+#### Basic
 
 - **cluster(amp, dur, synthdef, offset, ampComp)** - Ascending sequence
 - **reverse(amp, dur, synthdef, offset, ampComp)** - Descending sequence
 - **random(amp, dur, synthdef, offset)** - Random order
 - **fromCenter(amp, dur, synthdef, offset)** - Expanding from center
 
-#### Advanced Patterns
+#### Advanced
 
 - **clusterGrad(ampFrom, ampTo, durFrom, durTo, synthdef, offsetFrom, offsetTo, ampComp)** - Gradient cluster with interpolated parameters
 - **dense(amp, dur, synthdef, offset, ampComp)** - Overlapping cloud texture
@@ -155,7 +141,7 @@ Transform Ora objects into sound using various playback strategies:
 - **pairs(amp, dur, synthdef, offset)** - Play in pairs
 - **wave(amp, dur, synthdef, offset)** - Ascending then descending
 
-#### Amplitude Shaping
+#### Amplitude
 
 - **ampCurve(amp, dur, synthdef, offset, ampCurve)** - Amplitude envelope over sequence
 - **ampByFreq(amp, dur, synthdef, offset, minFreq, maxFreq, ampCurve)** - Frequency-based amplitude mapping
@@ -163,7 +149,7 @@ Transform Ora objects into sound using various playback strategies:
 
 All patterns support automatic stereo panning for spatial distribution.
 
-### OraSeq - Sequence Management
+### OraSeq
 
 Manage collections of Ora transformations and visualize their evolution:
 
@@ -178,11 +164,11 @@ Manage collections of Ora transformations and visualize their evolution:
 - **info()** - Print sequence information
 - **asArrays()** - Export all frequency arrays
 
-### OraRatios - Ratio-Based Frequency Generation
+### OraRatios
 
 Build frequency arrays from intervallic ratios for precise tuning control:
 
-#### Creation & Analysis
+#### Creation / Analysis
 
 - **OraRatios.new(startFreq, ratios)** - Create from starting frequency and ratio array
 - **OraRatios.fromFreqs(freqArray)** - Analyze existing frequencies to extract ratios
@@ -198,7 +184,7 @@ Build frequency arrays from intervallic ratios for precise tuning control:
 - **scaleRatios(scalar)** - Expand/compress all intervals
 - **copy()** - Create independent copy
 
-#### Preset Patterns
+#### Patterns
 
 - **microCluster(startFreq)** - Tight microtonal intervals
 - **tritone(startFreq)** - Devil's interval based
@@ -211,12 +197,12 @@ Build frequency arrays from intervallic ratios for precise tuning control:
 - **equalTemperament(startFreq, semitones)** - 12-TET scales
 - **random(startFreq, numRatios, minRatio, maxRatio)** - Random ratios
 
-#### Integration
+#### Integrate
 
 - **asOra()** - Convert to Ora object
 - **asOraPlay(minFreq, maxFreq, numChannels)** - Convert to OraPlay object
 
-### OraSpear - SPEAR Analysis Import
+### OraSpear
 
 Import and extract representative frequencies from SPEAR spectral analysis files:
 
@@ -252,7 +238,7 @@ Import and extract representative frequencies from SPEAR spectral analysis files
 
 - **asOra(n, sortBy, method)** - Convert to Ora object with extracted frequencies
 
-#### Example Workflow
+#### Workflow
 
 ```supercollider
 // Load and parse SPEAR analysis
@@ -274,7 +260,7 @@ Import and extract representative frequencies from SPEAR spectral analysis files
 
 **Note:** To create SPEAR analysis files, use the [SPEAR software](http://www.klingbeil.com/spear/) to analyze audio files. Export as `.txt` format for use with OraSpear.
 
-## Included SynthDefs
+## SynthDefs
 
 - **drbase** - Clean sine with subtle noise modulation and evolving character
 - **drpm** - Phase modulation with amplitude tremolo
@@ -290,8 +276,6 @@ Load them with: `Ora.addSynths;`
 
 ## Examples
 
-The library includes an `examples.scd` file with over 50 working examples demonstrating:
-
 - Serial transformations (retrograde, inversion, rotation)
 - Parametric transformations (dilation, warping, morphing)
 - Frequency set generation (inharmonic, golden ratio, primes, Fibonacci)
@@ -301,105 +285,3 @@ The library includes an `examples.scd` file with over 50 working examples demons
 - Real-time transformation exploration
 
 Open `examples.scd` in SuperCollider and evaluate examples individually to learn the library.
-
-## Workflow
-
-The typical Ora workflow:
-
-1. **Generate** or import initial frequency array
-   - Use OraGen for algorithmic generation
-   - Use OraRatios for ratio-based tuning
-   - Use OraSpear to import from SPEAR analysis
-   - Or create manually with arrays
-2. **Transform** using Ora methods (chainable)
-3. **Visualize** with plot methods
-4. **Play** using OraPlay patterns
-5. **Sequence** multiple variations with OraSeq
-
-```supercollider
-// Complete workflow example
-(
-// 1. Generate
-~freqs = OraGen.inharmonic(100, 12, 1.08);
-
-// 2. Create sequence of transformations
-~seq = OraSeq.new([
-    Ora.new(~freqs),
-    Ora.new(~freqs).centroidDilation(1.3),
-    Ora.new(~freqs).formantGap(fHole: 500, bw: 120, amount: 0.25),
-    Ora.new(~freqs).retrograde().transposition(30)
-]);
-
-// 3. Visualize evolution
-~seq.plot;
-
-// 4. Play sequence
-~seq.playSequence(\cluster, waitTime: 6);
-)
-
-// Dissonant transformations example
-(
-~o = Ora([100, 200, 300, 400, 500, 600, 700, 800]);
-
-// Create eerie, unstable cluster
-~o.cluster(numClusters: 3, spread: 30)
-  .detune(cents: 15)
-  .wobble(amount: 0.1);
-
-// Play with gradient
-~p = OraPlay(~o);
-~p.clusterGrad(
-    ampFrom: 0.03, 
-    ampTo: 0.06, 
-    durFrom: 6, 
-    durTo: 3,
-    offsetFrom: 0.08, 
-    offsetTo: 0.2,
-    ampComp: 1.0
-);
-)
-
-// Ratio-based tuning example
-(
-// Build from golden ratio and tritones
-~r = OraRatios.eerie(60);
-~r.printAnalysis;
-
-// Transpose and scale
-~r.transpose(80).scaleRatios(1.2);
-
-// Convert and play
-~p = ~r.asOraPlay;
-~p.cluster(amp: 0.05, ampComp: 0.8);
-)
-
-// SPEAR analysis import example
-(
-// Load SPEAR analysis file
-~spear = OraSpear.new("path/to/bell.txt");
-~spear.parse.printInfo;
-
-// Extract frequencies and transform
-~ora = ~spear.asOra(16, \duration, \weightedMean);
-~ora.fracture(splits: 2, jitter: 0.03)
-    .detune(cents: 8)
-    .chaos(amount: 0.2);
-
-// Play with gradient
-~p = OraPlay(~ora);
-~p.clusterGrad(
-    ampFrom: 0.02, ampTo: 0.08,
-    durFrom: 8, durTo: 2,
-    offsetFrom: 0.15, offsetTo: 0.05,
-    ampComp: 1.0
-);
-)
-```
-
-## Something
-
-- All transformations work in-place and return `this` for method chaining
-- Frequency arrays are clipped to safe ranges (1e-6 to 1e9 Hz internally)
-- OraPlay filters playback to 40-14000 Hz range
-- Transformations operate on the `items` instance variable
-- Compatible with plain arrays: `OraPlay.new([100, 200, 300])`

@@ -497,45 +497,52 @@ Ora {
 			Rect(200, 200, width, height));
 
 		uv = UserView(w, Rect(0, 0, width, height));
-		uv.background = Color.grey(0.12);
+		uv.background = Color.new(0.09, 0.11, 0.13);
 		uv.drawFunc = {
 			var pad = 50, plotW = width - (pad * 2), plotH = height - (pad * 2);
 			var logMin = minF.max(1).log, logMax = maxF.max(2).log;
+			var pal = [
+				Color.new(0.81, 0.93, 0.86), Color.new(0.79, 0.89, 0.79),
+				Color.new(0.85, 0.82, 0.85), Color.new(0.45, 0.70, 0.81),
+				Color.new(0.95, 0.91, 0.86), Color.new(0.73, 0.86, 0.61),
+				Color.new(0.62, 0.71, 0.67), Color.new(0.81, 1.0, 0.90),
+				Color.new(0.90, 0.92, 0.92), Color.new(0.74, 0.77, 0.86)
+			];
 
-			Pen.color = Color.grey(0.3);
+			Pen.color = Color.new(0.20, 0.23, 0.28);
 			5.do { |i|
 				var y = pad + (plotH * i / 4);
+				var freq = exp(logMax - ((logMax - logMin) * i / 4));
 				Pen.line(pad @ y, (pad + plotW) @ y);
 				Pen.stroke;
-				var freq = exp(logMax - ((logMax - logMin) * i / 4));
-				Pen.color = Color.grey(0.5);
+				Pen.color = Color.new(0.62, 0.71, 0.67);
 				Pen.stringAtPoint(freq.round(0.1).asString ++ " Hz",
 					2 @ (y - 6), Font("Menlo", 9));
-				Pen.color = Color.grey(0.3);
+				Pen.color = Color.new(0.20, 0.23, 0.28);
 			};
 
 			items.do { |f, i|
 				var x = pad + (i / (items.size - 1).max(1) * plotW);
 				var normY = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
 				var y = pad + plotH - (normY * plotH);
-				var hue = normY.linlin(0, 1, 0.55, 0.0);
+				var c = pal[i % 10];
 
-				Pen.color = Color.hsv(hue, 0.8, 0.95, 0.7);
+				Pen.color = Color.new(c.red, c.green, c.blue, 0.7);
 				Pen.line(x @ (pad + plotH), x @ y);
 				Pen.width = 2;
 				Pen.stroke;
 
-				Pen.color = Color.hsv(hue, 0.9, 1.0);
+				Pen.color = c;
 				Pen.fillOval(Rect(x - 3, y - 3, 6, 6));
 
 				if (items.size <= 24) {
-					Pen.color = Color.grey(0.6);
+					Pen.color = Color.new(0.62, 0.71, 0.67);
 					Pen.stringAtPoint(f.round(0.1).asString,
 						(x - 10) @ (y - 14), Font("Menlo", 8));
 				};
 			};
 
-			Pen.color = Color.grey(0.5);
+			Pen.color = Color.new(0.62, 0.71, 0.67);
 			Pen.stringAtPoint("index", ((pad + plotW) / 2) @ (height - 14), Font("Menlo", 9));
 		};
 		w.front;
@@ -555,14 +562,16 @@ Ora {
 			Rect(200, 200, width, height));
 
 		uv = UserView(w, Rect(0, 0, width, height));
-		uv.background = Color.grey(0.12);
+		uv.background = Color.new(0.09, 0.11, 0.13);
 		uv.drawFunc = {
 			var pad = 50, plotW = width - (pad * 2), plotH = height - (pad * 2);
 			var logMin = minF.max(1).log, logMax = maxF.max(2).log;
 			var halfW = plotW / 2 - 10;
+			var colA = Color.new(0.45, 0.70, 0.81);
+			var colB = Color.new(0.73, 0.86, 0.61);
 
 			// Left: A
-			Pen.color = Color.grey(0.5);
+			Pen.color = Color.new(0.81, 0.93, 0.86);
 			Pen.stringAtPoint(nameA, (pad + halfW / 2 - 5) @ 8, Font("Menlo", 12));
 
 			items.do { |f, i|
@@ -570,16 +579,16 @@ Ora {
 				var normY = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
 				var y = pad + plotH - (normY * plotH);
 
-				Pen.color = Color.new(0.3, 0.7, 1.0, 0.7);
+				Pen.color = Color.new(colA.red, colA.green, colA.blue, 0.7);
 				Pen.line(x @ (pad + plotH), x @ y);
 				Pen.width = 2;
 				Pen.stroke;
-				Pen.color = Color.new(0.3, 0.7, 1.0);
+				Pen.color = colA;
 				Pen.fillOval(Rect(x - 3, y - 3, 6, 6));
 			};
 
 			// Right: B
-			Pen.color = Color.grey(0.5);
+			Pen.color = Color.new(0.81, 0.93, 0.86);
 			Pen.stringAtPoint(nameB, (pad + halfW + 20 + halfW / 2 - 5) @ 8, Font("Menlo", 12));
 
 			itemsB.do { |f, i|
@@ -587,27 +596,27 @@ Ora {
 				var normY = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
 				var y = pad + plotH - (normY * plotH);
 
-				Pen.color = Color.new(1.0, 0.5, 0.3, 0.7);
+				Pen.color = Color.new(colB.red, colB.green, colB.blue, 0.7);
 				Pen.line(x @ (pad + plotH), x @ y);
 				Pen.width = 2;
 				Pen.stroke;
-				Pen.color = Color.new(1.0, 0.5, 0.3);
+				Pen.color = colB;
 				Pen.fillOval(Rect(x - 3, y - 3, 6, 6));
 			};
 
 			// Divider
-			Pen.color = Color.grey(0.3);
+			Pen.color = Color.new(0.20, 0.23, 0.28);
 			Pen.line((pad + halfW + 10) @ pad, (pad + halfW + 10) @ (pad + plotH));
 			Pen.stroke;
 
 			// Y axis labels
 			5.do { |i|
 				var y = pad + (plotH * i / 4);
-				Pen.color = Color.grey(0.3);
+				var freq = exp(logMax - ((logMax - logMin) * i / 4));
+				Pen.color = Color.new(0.20, 0.23, 0.28);
 				Pen.line(pad @ y, (pad + plotW) @ y);
 				Pen.stroke;
-				var freq = exp(logMax - ((logMax - logMin) * i / 4));
-				Pen.color = Color.grey(0.5);
+				Pen.color = Color.new(0.62, 0.71, 0.67);
 				Pen.stringAtPoint(freq.round(0.1).asString,
 					2 @ (y - 6), Font("Menlo", 9));
 			};
@@ -628,19 +637,26 @@ Ora {
 			Rect(200, 200, width, height));
 
 		uv = UserView(w, Rect(0, 0, width, height));
-		uv.background = Color.grey(0.12);
+		uv.background = Color.new(0.09, 0.11, 0.13);
 		uv.drawFunc = {
 			var pad = 50, plotW = width - (pad * 2), plotH = height - (pad * 2);
 			var logMin = (minF * 0.8).max(1).log, logMax = (maxF * 1.2).log;
+			var pal = [
+				Color.new(0.81, 0.93, 0.86), Color.new(0.79, 0.89, 0.79),
+				Color.new(0.85, 0.82, 0.85), Color.new(0.45, 0.70, 0.81),
+				Color.new(0.95, 0.91, 0.86), Color.new(0.73, 0.86, 0.61),
+				Color.new(0.62, 0.71, 0.67), Color.new(0.81, 1.0, 0.90),
+				Color.new(0.90, 0.92, 0.92), Color.new(0.74, 0.77, 0.86)
+			];
 
 			// Frequency axis markers
 			[20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000].do { |f|
 				if (f >= (minF * 0.8) and: { f <= (maxF * 1.2) }) {
 					var x = pad + ((f.log - logMin) / (logMax - logMin) * plotW);
-					Pen.color = Color.grey(0.22);
+					Pen.color = Color.new(0.20, 0.23, 0.28);
 					Pen.line(x @ pad, x @ (pad + plotH));
 					Pen.stroke;
-					Pen.color = Color.grey(0.45);
+					Pen.color = Color.new(0.62, 0.71, 0.67);
 					Pen.stringAtPoint(
 						if (f >= 1000) { (f / 1000).asString ++ "k" } { f.asString },
 						(x - 8) @ (pad + plotH + 4), Font("Menlo", 9));
@@ -651,15 +667,15 @@ Ora {
 			sorted.do { |f, i|
 				var normX = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
 				var x = pad + (normX * plotW);
-				var hue = i / sorted.size.max(1) * 0.7;
+				var c = pal[i % 10];
 
-				Pen.color = Color.hsv(hue, 0.85, 1.0, 0.8);
+				Pen.color = Color.new(c.red, c.green, c.blue, 0.8);
 				Pen.line(x @ (pad + plotH), x @ pad);
 				Pen.width = 3;
 				Pen.stroke;
 
 				if (items.size <= 20) {
-					Pen.color = Color.grey(0.6);
+					Pen.color = Color.new(0.62, 0.71, 0.67);
 					Pen.push;
 					Pen.translate(x + 3, pad + plotH - 20);
 					Pen.rotate(-1.3);
@@ -668,7 +684,7 @@ Ora {
 				};
 			};
 
-			Pen.color = Color.grey(0.5);
+			Pen.color = Color.new(0.62, 0.71, 0.67);
 			Pen.stringAtPoint("Hz (log)", ((pad + plotW) / 2) @ (height - 14), Font("Menlo", 9));
 		};
 		w.front;
@@ -686,27 +702,34 @@ Ora {
 		w = Window(name, Rect(200, 200, width, height));
 
 		uv = UserView(w, Rect(0, 0, width, height));
-		uv.background = Color.grey(0.12);
+		uv.background = Color.new(0.09, 0.11, 0.13);
 		uv.drawFunc = {
 			var pad = 50, plotW = width - (pad * 2), plotH = (height - (pad * 3)) / 2;
 			var maxInterval, maxRatio;
+			var pal = [
+				Color.new(0.81, 0.93, 0.86), Color.new(0.79, 0.89, 0.79),
+				Color.new(0.85, 0.82, 0.85), Color.new(0.45, 0.70, 0.81),
+				Color.new(0.95, 0.91, 0.86), Color.new(0.73, 0.86, 0.61),
+				Color.new(0.62, 0.71, 0.67), Color.new(0.81, 1.0, 0.90),
+				Color.new(0.90, 0.92, 0.92), Color.new(0.74, 0.77, 0.86)
+			];
 
 			// Top: intervals in Hz
 			maxInterval = intervals.maxItem.max(1);
-			Pen.color = Color.grey(0.5);
+			Pen.color = Color.new(0.81, 0.93, 0.86);
 			Pen.stringAtPoint("Intervals (Hz)", (pad) @ 8, Font("Menlo", 10));
 
 			intervals.do { |iv, i|
 				var x = pad + (i / intervals.size.max(1) * plotW);
 				var barW = (plotW / intervals.size) * 0.7;
 				var h = iv / maxInterval * plotH;
-				var hue = (iv / maxInterval).linlin(0, 1, 0.35, 0.0);
+				var c = pal[i % 10];
 
-				Pen.color = Color.hsv(hue, 0.8, 0.9, 0.8);
+				Pen.color = Color.new(c.red, c.green, c.blue, 0.8);
 				Pen.fillRect(Rect(x, pad + plotH - h, barW, h));
 
 				if (intervals.size <= 20) {
-					Pen.color = Color.grey(0.6);
+					Pen.color = Color.new(0.62, 0.71, 0.67);
 					Pen.stringAtPoint(iv.round(0.1).asString,
 						x @ (pad + plotH - h - 12), Font("Menlo", 8));
 				};
@@ -714,7 +737,7 @@ Ora {
 
 			// Bottom: ratios
 			maxRatio = ratios.maxItem.max(1.01);
-			Pen.color = Color.grey(0.5);
+			Pen.color = Color.new(0.81, 0.93, 0.86);
 			Pen.stringAtPoint("Ratios", (pad) @ (pad * 2 + plotH + 4), Font("Menlo", 10));
 
 			ratios.do { |r, i|
@@ -722,19 +745,235 @@ Ora {
 				var x = pad + (i / ratios.size.max(1) * plotW);
 				var barW = (plotW / ratios.size) * 0.7;
 				var h = ((r - 1) / (maxRatio - 1)).max(0) * plotH;
-				var hue = ((r - 1) / (maxRatio - 1)).linlin(0, 1, 0.55, 0.0);
+				var c = pal[i % 10];
 
-				Pen.color = Color.hsv(hue, 0.7, 0.9, 0.8);
+				Pen.color = Color.new(c.red, c.green, c.blue, 0.8);
 				Pen.fillRect(Rect(x, yOff + plotH - h, barW, h));
 
 				if (ratios.size <= 20) {
-					Pen.color = Color.grey(0.6);
+					Pen.color = Color.new(0.62, 0.71, 0.67);
 					Pen.stringAtPoint(r.round(0.001).asString,
 						x @ (yOff + plotH - h - 12), Font("Menlo", 8));
 				};
 			};
 		};
 		w.front;
+		^this;
+	}
+
+	plotRadial { |name = "Ora Radial", bounds|
+		var w, width, height, uv;
+		var minF = items.minItem.max(1), maxF = items.maxItem;
+		var logMin = minF.log, logMax = maxF.log;
+		width = bounds !? { bounds.width } ?? { 500 };
+		height = bounds !? { bounds.height } ?? { 500 };
+
+		w = Window(name ++ " (" ++ items.size ++ " freqs)",
+			Rect(200, 200, width, height));
+
+		uv = UserView(w, Rect(0, 0, width, height));
+		uv.background = Color.new(0.09, 0.11, 0.13);
+		uv.drawFunc = {
+			var cx = width * 0.5, cy = height * 0.5;
+			var maxR = (width.min(height) * 0.5) - 40;
+			var minR = maxR * 0.15;
+			var n = items.size;
+			var px = Array.newClear(n), py = Array.newClear(n);
+			var pal = [
+				Color.new(0.81, 0.93, 0.86), Color.new(0.79, 0.89, 0.79),
+				Color.new(0.85, 0.82, 0.85), Color.new(0.45, 0.70, 0.81),
+				Color.new(0.95, 0.91, 0.86), Color.new(0.73, 0.86, 0.61),
+				Color.new(0.62, 0.71, 0.67), Color.new(0.81, 1.0, 0.90),
+				Color.new(0.90, 0.92, 0.92), Color.new(0.74, 0.77, 0.86)
+			];
+
+			3.do { |i|
+				var r = minR + ((maxR - minR) * (i + 1) / 3);
+				var freq = exp(logMin + ((logMax - logMin) * (i + 1) / 3));
+				Pen.color = Color.new(0.20, 0.23, 0.28);
+				Pen.strokeOval(Rect(cx - r, cy - r, r * 2, r * 2));
+				Pen.color = Color.new(0.45, 0.53, 0.50);
+				Pen.stringAtPoint(freq.round(1).asString ++ " Hz",
+					(cx + 3) @ (cy - r - 2), Font("Menlo", 8));
+			};
+
+			items.do { |f, i|
+				var angle = 2pi * i / n - (pi / 2);
+				var normR = (f.max(1).log - logMin) / (logMax - logMin).max(0.001);
+				var r = minR + (normR * (maxR - minR));
+				px[i] = cx + (r * cos(angle));
+				py[i] = cy + (r * sin(angle));
+			};
+
+			n.do { |i|
+				var j = (i + 1) % n;
+				var c = pal[i % 10];
+				Pen.color = Color.new(c.red, c.green, c.blue, 0.4);
+				Pen.line(px[i] @ py[i], px[j] @ py[j]);
+				Pen.width = 1.5;
+				Pen.stroke;
+			};
+
+			items.do { |f, i|
+				var angle = 2pi * i / n - (pi / 2);
+				var lx, ly;
+				var c = pal[i % 10];
+				Pen.color = Color.new(c.red, c.green, c.blue, 0.15);
+				Pen.line(cx @ cy, px[i] @ py[i]);
+				Pen.width = 1;
+				Pen.stroke;
+
+				Pen.color = c;
+				Pen.fillOval(Rect(px[i] - 4, py[i] - 4, 8, 8));
+
+				if (n <= 16) {
+					lx = px[i] + (cos(angle) * 14);
+					ly = py[i] + (sin(angle) * 14) - 5;
+					Pen.color = Color.new(0.62, 0.71, 0.67);
+					Pen.stringAtPoint(f.round(0.1).asString,
+						lx @ ly, Font("Menlo", 8));
+				};
+			};
+		};
+		w.front;
+		^this;
+	}
+
+	plotPiano { |name = "Ora Pitch Map", bounds|
+		var w, width, height, uv;
+		var noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+		var midis = items.collect { |f| 69 + (12 * (f / 440).log2) };
+		var minMidi = midis.minItem.floor - 1;
+		var maxMidi = midis.maxItem.ceil + 1;
+		width = bounds !? { bounds.width } ?? { 700 };
+		height = bounds !? { bounds.height } ?? { 400 };
+
+		w = Window(name ++ " (" ++ items.size ++ " freqs)",
+			Rect(200, 200, width, height));
+
+		uv = UserView(w, Rect(0, 0, width, height));
+		uv.background = Color.new(0.09, 0.11, 0.13);
+		uv.drawFunc = {
+			var pad = 60, plotW = width - (pad * 2), plotH = height - (pad * 2);
+			var midiRange = (maxMidi - minMidi).max(0.001);
+
+			(minMidi.asInteger..maxMidi.asInteger).do { |midi|
+				var y = pad + plotH - ((midi - minMidi) / midiRange * plotH);
+				var noteName = noteNames[midi % 12];
+				var octave = (midi / 12).floor.asInteger - 1;
+				var isC = (midi % 12) == 0;
+
+				if ([1, 3, 6, 8, 10].includes(midi % 12)) {
+					Pen.color = Color.new(0.14, 0.16, 0.20);
+				} {
+					Pen.color = Color.new(0.20, 0.23, 0.28);
+				};
+				Pen.line(pad @ y, (pad + plotW) @ y);
+				Pen.width = if (isC) { 1.5 } { 0.5 };
+				Pen.stroke;
+
+				Pen.color = if (isC) { Color.new(0.81, 0.93, 0.86) } { Color.new(0.35, 0.40, 0.38) };
+				Pen.stringAtPoint(noteName ++ octave,
+					4 @ (y - 5), Font("Menlo", 8));
+			};
+
+			items.do { |f, i|
+				var midi = midis[i];
+				var y = pad + plotH - ((midi - minMidi) / midiRange * plotH);
+				var x = pad + (i / (items.size - 1).max(1) * plotW);
+				var nearestSemi = midi.round(1);
+				var centsDev = (midi - nearestSemi) * 100;
+				var t = (centsDev.abs / 50).clip(0, 1);
+				var cr = (0.73 * (1 - t)) + (0.45 * t);
+				var cg = (0.86 * (1 - t)) + (0.70 * t);
+				var cb = (0.61 * (1 - t)) + (0.81 * t);
+				var devStr;
+
+				Pen.color = Color.new(cr, cg, cb, 0.55);
+				Pen.line(pad @ y, x @ y);
+				Pen.width = 1.5;
+				Pen.stroke;
+
+				Pen.color = Color.new(cr, cg, cb);
+				Pen.fillOval(Rect(x - 4, y - 4, 8, 8));
+
+				if (items.size <= 20) {
+					devStr = if (centsDev >= 0)
+						{ "+" ++ centsDev.round(1).asString }
+						{ centsDev.round(1).asString };
+					Pen.color = Color.new(0.62, 0.71, 0.67);
+					Pen.stringAtPoint(devStr ++ "c",
+						(x + 6) @ (y - 5), Font("Menlo", 8));
+				};
+			};
+
+			Pen.color = Color.new(0.62, 0.71, 0.67);
+			Pen.stringAtPoint("index",
+				((pad + plotW) * 0.5) @ (height - 14), Font("Menlo", 9));
+		};
+		w.front;
+		^this;
+	}
+
+	plotMatrix { |name = "Ora Ratio Matrix", bounds|
+		var w, width, height, uv;
+		var sorted = items.copy.sort;
+		var n = sorted.size;
+		width = bounds !? { bounds.width } ?? { (n * 44 + 80).clip(350, 900) };
+		height = bounds !? { bounds.height } ?? { (n * 44 + 80).clip(350, 900) };
+
+		w = Window(name ++ " (" ++ n ++ "x" ++ n ++ ")",
+			Rect(200, 200, width, height));
+
+		uv = UserView(w, Rect(0, 0, width, height));
+		uv.background = Color.new(0.09, 0.11, 0.13);
+		uv.drawFunc = {
+			var pad = 55;
+			var cellW = (width - pad - 10) / n;
+			var cellH = (height - pad - 10) / n;
+
+			sorted.do { |fi, i|
+				sorted.do { |fj, j|
+					var ratio = fj / fi;
+					var logR = ratio.log2;
+					var val = (1 / (1 + (logR.abs * 0.4))).clip(0.15, 1.0);
+					var x = pad + (j * cellW);
+					var y = 10 + ((n - 1 - i) * cellH);
+
+					Pen.color = Color.new(0.81 * val, 1.0 * val, 0.90 * val, val);
+					Pen.fillRect(Rect(x, y, cellW - 1, cellH - 1));
+
+					if (n <= 12) {
+						Pen.color = if (val > 0.5) { Color.new(0.09, 0.11, 0.13) } { Color.new(0.81, 0.93, 0.86) };
+						Pen.stringAtPoint(ratio.round(0.01).asString,
+							(x + 2) @ (y + (cellH * 0.35)),
+							Font("Menlo", (cellW * 0.22).clip(6, 10)));
+					};
+				};
+			};
+
+			sorted.do { |f, i|
+				Pen.color = Color.new(0.62, 0.71, 0.67);
+				Pen.stringAtPoint(f.round(1).asString,
+					(pad + (i * cellW) + 1) @ (10 + (n * cellH) + 4),
+					Font("Menlo", (cellW * 0.2).clip(6, 9)));
+				Pen.stringAtPoint(f.round(1).asString,
+					2 @ (10 + ((n - 1 - i) * cellH) + (cellH * 0.3)),
+					Font("Menlo", (cellH * 0.2).clip(6, 9)));
+			};
+		};
+		w.front;
+		^this;
+	}
+
+	plotWaveform { |name = "Ora Waveform", bounds, duration = 0.025, sampleRate = 44100|
+		var numSamples = (duration * sampleRate).asInteger;
+		var nFreqs = items.size.max(1);
+		var samples = Array.fill(numSamples, { |i|
+			var t = i / sampleRate;
+			items.sum { |f| sin(2pi * f * t) } / nFreqs;
+		});
+		samples.plot(name, bounds);
 		^this;
 	}
 
