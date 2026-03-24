@@ -113,14 +113,12 @@ Methods are chainable and return `this`, enabling fluent transformation pipeline
 ### Generation
 
 - **cluster(base, size, spread)** - Microtonal clusters
-- **inharmonic(fundamental, size, stretch)** - Non-integer overtone series
-- **golden(base, size, direction)** - Golden ratio-based spacing
-- **primes(base, size, factor)** - Prime number frequency series
-- **random(minFreq, maxFreq, size, density)** - Random frequency sets
-- **shepard(base, octaves, notesPerOctave)** - Shepard tone illusions
+- **inharmonic(fundamental, size, stretch)** - Inharmonic series
+- **primes(base, size, factor)** - Prime numbers
+- **random(minFreq, maxFreq, size, density)** - Random sets
 - **tritones(base, size)** - Tritone stacks
-- **sieve(base, moduli, size)** - Xenakis sieve technique
-- **fibonacci(base, size)** - Fibonacci sequence frequencies
+- **sieve(base, moduli, size)** - Sieves
+- **fibonacci(base, size)** - Fibonacci
 
 ### OraPlay
 
