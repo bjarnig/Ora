@@ -46,8 +46,8 @@ Methods are chainable and return `this`, enabling fluent transformation pipeline
 
 #### Serial
 
-- **retrograde()** - Reverse the frequency sequence
-- **inversion(pivot)** - Mirror frequencies around a pivot point
+- **retrograde()** - Reverse the sequence
+- **inversion(pivot)** - Mirror around a pivot point
 - **retrogradeInversion(pivot)** - Reverse and invert
 - **rotation(n)** - Circular shift (rotate by n positions)
 - **transposition(shift)** - Add a constant shift to all frequencies
@@ -57,7 +57,7 @@ Methods are chainable and return `this`, enabling fluent transformation pipeline
 - **affineLog(scale, shift)** - Scale and shift in log-frequency space
 - **centroidDilation(r, curve)** - Expand/compress around the log-centroid
 - **rotate(frac)** - Fractional circular rotation with interpolation
-- **projective(a, b, c, d)** - Mobius-like spectral warping
+- **projective(a, b, c, d)** - Spectral warping
 - **intervalFlow(scale, ph, k)** - Generate frequencies from interval field
 - **blend(targetArray, alpha)** - Linear interpolation to target frequencies
 - **rankPower(alpha)** - Power-law distortion by frequency rank
