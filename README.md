@@ -14,10 +14,10 @@ A set of processes for generating, transforming, and sequencing frequency arrays
 ## Use
 
 ```supercollider
-// Load SynthDefs
+// Load
 Ora.addSynths;
 
-// Create and transform
+// Create
 ~myOra = Ora.new([200, 300, 400, 500, 600, 700])
     .centroidDilation(1.3)
     .formantGap(fHole: 450, bw: 100, amount: 0.2)
@@ -26,11 +26,11 @@ Ora.addSynths;
 // Visualize
 ~myOra.plot;
 
-// Play it
+// Play
 ~player = OraPlay.new(~myOra);
 ~player.cluster(0.045, 4, \drsoft);
 
-// Create dissonant clusters
+// Cluster
 ~dissonant = Ora([100, 150, 200, 250, 300])
     .shatter(pieces: 3, spread: 0.08)
     .detune(cents: 20)
@@ -42,7 +42,7 @@ Ora.addSynths;
 
 ### Ora - Transformation
 
-The main class for transforming frequency arrays. All methods are chainable and return `this`, enabling fluent transformation pipelines.
+Methods are chainable and return `this`, enabling fluent transformation pipelines.
 
 #### Serial
 
@@ -258,8 +258,6 @@ Import and extract representative frequencies from SPEAR spectral analysis files
 ~p.cluster(amp: 0.05, ampComp: 0.8);
 ```
 
-**Note:** To create SPEAR analysis files, use the [SPEAR software](http://www.klingbeil.com/spear/) to analyze audio files. Export as `.txt` format for use with OraSpear.
-
 ## SynthDefs
 
 - **drbase** - Clean sine with subtle noise modulation and evolving character
@@ -271,17 +269,3 @@ Import and extract representative frequencies from SPEAR spectral analysis files
 - **drgend** - Gendy-based organic texture with bandpass filtering
 - **drimp** - Impulse-based comb filter (pitched resonance)
 - **drdfm** - Rich dual-formant synthesis with beating
-
-Load them with: `Ora.addSynths;`
-
-## Examples
-
-- Serial transformations (retrograde, inversion, rotation)
-- Parametric transformations (dilation, warping, morphing)
-- Frequency set generation (inharmonic, golden ratio, primes, Fibonacci)
-- All playback patterns and amplitude shaping techniques
-- Sequence management and visualization
-- Complete workflows from generation to performance
-- Real-time transformation exploration
-
-Open `examples.scd` in SuperCollider and evaluate examples individually to learn the library.
