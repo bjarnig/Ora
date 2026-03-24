@@ -14,16 +14,16 @@ A set of processes for generating, transforming, and sequencing frequency arrays
 ## Use
 
 ```supercollider
-// Load SynthDefs first
+// Load SynthDefs
 Ora.addSynths;
 
-// Create and transform a frequency array
+// Create and transform
 ~myOra = Ora.new([200, 300, 400, 500, 600, 700])
     .centroidDilation(1.3)
     .formantGap(fHole: 450, bw: 100, amount: 0.2)
     .transposition(50);
 
-// Visualize the result
+// Visualize
 ~myOra.plot;
 
 // Play it
