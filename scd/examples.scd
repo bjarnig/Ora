@@ -1,6 +1,5 @@
-// ============================================================
+
 // ORA LIBRARY - COMPREHENSIVE EXAMPLES
-// ============================================================
 //
 // A complete guide to using the Ora library for spectral composition
 // 
@@ -10,15 +9,12 @@
 //   - OraPlay: Play frequency arrays with patterns
 //   - OraSeq: Manage sequences of transformations
 //
-// ============================================================
 
 // SETUP: Load SynthDefs first (run this once per session)
 Ora.addSynths;
 
 
-// ============================================================
 // ORA CLASS - Frequency Array Transformations
-// ============================================================
 
 // All array transformations are encapsulated in the Ora class.
 // Methods are chainable and operate on the 'items' instance variable.
@@ -89,9 +85,7 @@ Ora.addSynths;
 ~ora_complex.items;
 
 
-// ============================================================
 // ORAPLAY CLASS - Playback Patterns
-// ============================================================
 
 // Play transformed frequency arrays with different patterns
 
@@ -156,9 +150,7 @@ OraPlay.new(
 )
 
 
-// ============================================================
 // ORASEQ CLASS - Sequence Management
-// ============================================================
 
 // Manage sequences of Ora transformations and visualize evolution
 
@@ -258,9 +250,7 @@ OraPlay.new(
 ~arrays.do(_.postln);         // Print them
 
 
-// ============================================================
 // ORAGEN CLASS - Frequency Set Generation
-// ============================================================
 
 // Generate dissonant pitch arrays for use with Ora
 
@@ -364,9 +354,7 @@ Ora.new(~combined).plot;
 )
 
 
-// ============================================================
 // COMPLETE WORKFLOW EXAMPLES
-// ============================================================
 
 // Example 1: From generation to sequence
 (
@@ -445,9 +433,7 @@ Ora.new(~combined).plot;
 )
 
 
-// ============================================================
 // STOP ALL SOUND
-// ============================================================
 
 // Stop all running routines
 ~player.stop;
