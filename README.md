@@ -2,6 +2,8 @@
 
 A set of processes for generating, transforming, and sequencing frequency arrays.
 
+![Ora](docs/ora-evolution.png)
+
 ## Overview
 
 - **Ora** - Transform frequency arrays using serial techniques and parametric operations
