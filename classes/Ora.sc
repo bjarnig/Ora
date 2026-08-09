@@ -70,7 +70,7 @@ Ora {
 		var w = (0..n-1).linlin(0, n-1, -1, 1).collect { |x|
 			(x.abs.pow(curve)).linlin(0, 1, 0, 1)
 		};
-		var log2 = log.collect { |x, i| c + (x - c) * (1 + (r - 1) * w[i]) };
+		var log2 = log.collect { |x, i| c + ((x - c) * (1 + ((r - 1) * w[i]))) };
 		items = log2.exp;
 		^this;
 	}
@@ -131,7 +131,7 @@ Ora {
 			"blend: target size mismatch".warn;
 			^this;
 		};
-		items = a.collect { |x, i| x * (1 - alpha) + b[i] * alpha };
+		items = a.collect { |x, i| (x * (1 - alpha)) + (b[i] * alpha) };
 		^this;
 	}
 
@@ -216,13 +216,15 @@ Ora {
 	//     Pulls freqs toward nearest rational multiples of a base; amt ∈ [0..1].
 	ratioSnap { |base = 100, maxNum = 16, maxDen = 16, amt = 0.3|
 		var f = items;
-		var ratios = Array.fill(maxNum, { |n|
+		// numerators from 1: a 0/d ratio would put a 0 Hz candidate in the set
+		var ratios = (1..maxNum).collect { |n|
 			(1..maxDen).collect { |d| n/d }
-		}).flat.select { |r| r.isNumber }.as(Set).asArray.sort;
+		}.flat.as(Set).asArray.sort;
 		items = f.collect { |x|
-			var best = ratios.collect { |r| (base * r) }
-				.sortBy { |cand| (cand - x).abs }[0];
-			x * (1 - amt) + best * amt
+			// minItem, not sortBy: sortBy expects a selector Symbol, not a Function
+			var best = ratios.collect { |r| base * r }
+				.minItem { |cand| (cand - x).abs };
+			(x * (1 - amt)) + (best * amt)
 		};
 		^this;
 	}

@@ -16,15 +16,18 @@ OraSpear {
 
 	// Parse SPEAR .txt file
 	parse {
-		var file, line, inData = false, currentPartial;
+		var lines, inData = false, currentPartial;
 
-		file = File(this.filepath, "r");
-		if (file.isNil) {
+		// File:getLine stops at 1024 characters; SPEAR partial-data lines
+		// routinely run to five figures, so read the file whole and split.
+		lines = File.readAllString(this.filepath);
+		if (lines.isNil or: { lines.isEmpty }) {
 			("OraSpear: Could not open file" + this.filepath).error;
 			^this;
 		};
+		lines = lines.split($\n);
 
-		while { line = file.getLine; line.notNil } {
+		lines.do { |line|
 			// Skip header until we hit partials-data
 			if (line.contains("partials-data")) {
 				inData = true;
@@ -75,7 +78,6 @@ OraSpear {
 			this.partials = this.partials.add(currentPartial);
 		};
 
-		file.close;
 		("OraSpear: Parsed" + this.partials.size + "partials from" + this.filepath.basename).postln;
 		^this;
 	}
